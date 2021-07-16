@@ -1,26 +1,135 @@
-<html>
-    <head>      
-        
-        <link rel="stylesheet" href="main.css">
-        <!-- <script type="text/javascript" src="demo.js" ></script> -->
-    </head>
-    <body>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - drag controls</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				background-color: #f0f0f0;
+				color: #444;
+			}
+			a {
+				color: #08f;
+			}
+			#navbarNavDarkDropdown{
+				width: 100px;
+				height: 40px;
+				
+			}
+		</style>
+	</head>
+	<body>
         <script src="/libs/three.js"></script>
         <script src="/libs/OrbitControls.js"></script>
         <script src="/libs/stats.js"></script>
         <script src="/libs/gui.js"></script>
         <script src="/libs/DragControls.js"></script>
-        <!-- <script src="ground.js"></script> -->
-        <script src="/app.js"></script>
-        
-        <!-- <span style="position:absolute;top:0px;left:0px;">
-            <input type="button" value="Toggle Wireframe" 
-            onclick="
-                mesh.material.wireframe=!mesh.material.wireframe;
-                meshFloor.material.wireframe=!meshFloor.material.wireframe;
-            "/></span> -->
-	</body>
-</html>
+		<script src="/libs/TransformControls.js"></script>
+		<script src="/libs/BufferGeometryUtils.js"></script>
+		<script src="/libs/ConvexGeometry.js"></script>
+		<script src="/libs/ConvexHull.js"></script>
+		<script src="/libs/GLTFLoader.js"></script>
 
-    </body>
+		<script src="/libs/EffectComposer.js"></script>
+		<script src="/libs/RenderPass.js"></script>
+		<script src="/libs/ShaderPass.js"></script>
+		
+		<script src="/libs/BloomPass.js"></script>
+		<script src="/libs/CopyShader.js"></script>
+		<script src="/libs/ConvolutionShader.js"></script>
+
+		<script src="/libs/FilmPass.js"></script>
+		<script src="/libs/FilmShader.js"></script>
+		
+		<script src="/libs/FocusShader.js"></script>
+
+		
+		<script src="/objects/TeapotGeometry.js"></script>
+		
+
+		<!-- Danh sách controls  -->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<div class="container-fluid">
+			  <a class="navbar-brand" href="#">MenuBar</a>
+			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+				<ul class="navbar-nav">				  
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						Controls
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<li><button type="button" id="dragBtn" class="dropdown-item" >Drag</button></li>
+						<li><button type="button" id="rotateBtn" class="dropdown-item" >Rotate</button></li>
+						<li><button type="button" id="scaleBtn" class="dropdown-item" >Scale</button></li>
+					</ul>
+				  </li>
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					  Geometries
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<li><button type="button" id="cubeBtn" class="dropdown-item" onclick="createCube()">Cube</button></li>
+						<li><button type="button" id="cylynderBtn" class="dropdown-item" onclick="createGlobular()">Globular</button></li>
+						
+						<li><button type="button" id="cylynderBtn" class="dropdown-item" onclick="createCone()">Cone</button></li>
+						<li><button type="button" id="cylynderBtn" class="dropdown-item" onclick="createCylinder()">Cylynder</button></li>
+						<li><button type="button" id="cubeBtn" class="dropdown-item" onclick="createWheel()">Wheel</button></li>					
+						<li><button type="button" id="cubeBtn" class="dropdown-item" onclick="createTeapot()">Teapot</button></li>
+						<!-- <li><button type="button" id="cylynderBtn" class="dropdown-item" onclick="createPencil()">Pencil</button></li>						 -->
+					</ul>
+				  </li>
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					  Materials
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<li><button type="button" id="solidBtn"  class="dropdown-item" onclick="solidMaterial()">Solid</button></li>
+						<li><button type="button" id="lineBtn"  class="dropdown-item" onclick="lineMaterial()" >Line</button></li>
+						<li><button type="button" id="pointBtn"  class="dropdown-item" onclick="pointMaterial()">Point</button></li>
+						<li><button type="button" id="pointBtn"  class="dropdown-item" onclick="textureMaterial()">Texture</button></li>
+					</ul>
+				  </li>
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					  Light
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<li><button type="button" id="solidBtn"  class="dropdown-item" onclick="singleLight()">Single Light</button></li>
+						<li><button type="button" id="solidBtn"  class="dropdown-item" onclick="multipleLight()">Multiple Light</button></li>
+					</ul>
+				  </li>
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					  Animations
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+						<li><button type="button" id="solidBtn"  class="dropdown-item" onclick="turnAround()">Turn Around</button></li>
+						<li><button type="button" id="solidBtn"  class="dropdown-item" onclick="lightAround()">Light Around</button></li>						
+						<li><button type="button" id="solidBtn"  class="dropdown-item" onclick="cancelAnimate()">Cancel Animate</button></li>
+					</ul>
+				  </li>
+				  <li class="nav-item">
+					<button type="button" id="solidBtn"  class="dropdown-item" onclick="setViewPoint()">Turn Around</button>
+				  </li>
+				</ul>
+			  </div>
+			</div>
+		  </nav>
+    			
+	
+		<input type="file" id='upload' style="display: none;">
+        <script src="/app.js">			
+
+		</script>
+
+		
+
+	</body>
 </html>
