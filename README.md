@@ -1,4 +1,4 @@
-# 357-3DModel
+# 3DModel
 ## HƯỚNG DẪN SỬ DỤNG CHƯƠNG TRÌNH MÔ HÌNH HÌNH HỌC 3D
 ### I.  MÔI TRƯỜNG
 Code được viết trên Visual Studio Code trên Window 10. 
